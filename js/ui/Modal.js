@@ -12,29 +12,27 @@ class Modal {
    * необходимо выкинуть ошибку.
    * */
   constructor(element) {
-    this.element = element;
-    this.registerEvents();
-
-    if (this.element === null) {
+    if (element) {
+      this.element = element;
+      this.registerEvents();
+    } if (!this.element) {
       throw new Error("Модальное окно не передано!");
     }
-
   }
 
   /**
  * Открывает окно: устанавливает CSS-свойство display
  * со значением «block»
  * */
-  static open(element) {
-    element.style.display = 'block';
+  open() {
+    this.element.style.display = 'block';
   }
 
   /**
    * Закрывает окно: удаляет CSS-свойство display
    * */
-  static close(element) {
-    element.style.display = 'none';
-
+  close() {
+    this.element.style.display = 'none';
   }
 
   /**
@@ -47,7 +45,9 @@ class Modal {
   registerEvents() {
     const btnClose = Array.from(document.querySelectorAll('[data-dismiss = "modal"]'));
     btnClose.forEach(el => el.addEventListener('click', (e) => {
-      this.onClose(e);
+      if (el.closest('.modal') === this.element) {
+        this.onClose(e);
+      }
     }));
   }
 
@@ -57,19 +57,6 @@ class Modal {
      * */
 
   onClose(e) {
-    const btnClose = Array.from(document.querySelectorAll('[data-dismiss = "modal"]'));
-    btnClose.forEach(el => {
-      const parent = el.closest('.modal');
-      if (parent === this.element) {
-        Modal.close(this.element);
-      }
-      e.preventDefault();
-    })
-
+    this.close();
   }
-
-
-
-
-
 }

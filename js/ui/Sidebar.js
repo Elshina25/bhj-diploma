@@ -20,12 +20,9 @@ class Sidebar {
   static initToggleButton() {
     const sideBarToggle = document.querySelector('.sidebar-toggle');
     const sidebarMini = document.querySelector('.sidebar-mini');
-    sideBarToggle.addEventListener('click', function(e) {
-      if (sidebarMini.classList.contains('sidebar-open', 'sidebar-collapse')) {
-        sidebarMini.classList.remove('sidebar-open', 'sidebar-collapse');
-      } else {
-        sidebarMini.classList.add('sidebar-open', 'sidebar-collapse');
-      }
+    sideBarToggle.addEventListener('click', function (e) {
+      sidebarMini.classList.toggle('sidebar-open');
+      sidebarMini.classList.toggle('sidebar-collapse');
       e.preventDefault();
     })
 
@@ -39,27 +36,27 @@ class Sidebar {
    * выходу устанавливает App.setState( 'init' )
    * */
   static initAuthLinks() {
-    const btnSidebar = Array.from(document.querySelectorAll('.menu-item'));
-    btnSidebar.forEach(el => el.addEventListener('click', function(e) {
-      if (el.classList.contains('menu-item_register')) {
-        const modal = App.getModal('register');
-        const element = modal.element;
-        Modal.open(element);
-   
-      } if (el.classList.contains('menu-item_login')) {
-        const modal = App.getModal('login');
-        const element = modal.element;
-        Modal.open(element);
-      } 
-      if(el.classList.contains('menu-item_logout')) {
-        User.logout(response => {
-          if (response.success) {
-            App.setState('init');
-          }
-        });
-      }
-      e.preventDefault();
-    }))
+    const register = document.querySelector('.menu-item_register');
+    const login = document.querySelector('.menu-item_login');
+    const logout = document.querySelector('.menu-item_logout');
 
+    register.addEventListener('click', function (e) {
+      e.preventDefault();
+      new Modal(App.getModal('register')).element.open();
+    })
+
+    login.addEventListener('click', function (e) {
+      e.preventDefault();
+      new Modal(App.getModal('login')).element.open();
+    })
+
+    logout.addEventListener('click', function (e) {
+      e.preventDefault();
+      User.logout(response => {
+        if (response.success) {
+          App.setState('init');
+        }
+      });
+    });
   }
 }
