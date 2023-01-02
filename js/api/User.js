@@ -13,7 +13,8 @@ class User {
    * */
 
   static setCurrent(user) {
-    localStorage.setItem(login, password);
+    localStorage.setItem('user', user);
+    
   }
 
   /**
@@ -30,7 +31,6 @@ class User {
    * */
   static current() {
     return localStorage.getItem('user');
-
   }
 
   /**
@@ -38,14 +38,12 @@ class User {
    * авторизованном пользователе.
    * */
   static fetch(callback) {
-    const xhr = createRequest({
-      url: this.URL + '/user',
+    createRequest({
+      url: User.URL + '/current',
       method: 'GET',
-      responseType: 'json',
-      data,
       callback: (err, response) => {
         if (response && response.user) {
-          User.setCurrent(response.user);
+          User.current();
         }
         callback(err, response);
       }
@@ -61,15 +59,15 @@ class User {
    * User.setCurrent.
    * */
   static login(data, callback) {
-    const xhr = createRequest({
-      url: this.URL + '/login',
+    createRequest({
+      url: User.URL + '/login',
       method: 'POST',
-      responseType: 'json',
       data,
       callback: (err, response) => {
         if (response && response.user) {
           User.setCurrent(response.user);
         }
+        console.log(err);
         callback(err, response);
       }
     });
@@ -82,13 +80,12 @@ class User {
    * User.setCurrent.
    * */
   static register(data, callback) {
-    const xhr = createRequest({
-      url: this.URL + '/register',
+    createRequest({
+      url: User.URL + '/register',
       method: 'POST',
-      responseType: 'json',
       data,
       callback: (err, response) => {
-        if (response.success) {
+        if (response && response.user) {
           User.setCurrent(response.user);
         }
         callback(err, response);
@@ -102,6 +99,16 @@ class User {
    * выхода необходимо вызвать метод User.unsetCurrent
    * */
   static logout(callback) {
+    createRequest({
+      url: User.URL + '/logout',
+      method: 'POST',
+      callback: (err, response) => {
+        if (response.success) {
+          User.unsetCurrent();
+        }
+        callback(err, response);
+      }
+    });
 
   }
 
