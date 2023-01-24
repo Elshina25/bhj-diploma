@@ -12,6 +12,14 @@ class TransactionsWidget {
    * необходимо выкинуть ошибку.
    * */
   constructor( element ) {
+    if (element) {
+      this.element = element;
+      this.registerEvents();
+    } if (!this.element) {
+      throw new Error("Форма не передана!");
+    }
+
+    
 
   }
   /**
@@ -21,6 +29,16 @@ class TransactionsWidget {
    * экземпляра окна
    * */
   registerEvents() {
+    const btnIncome = document.querySelector('.create-income-button');
+    const btnExpense = document.querySelector('.create-expense-button');
 
+    btnIncome.addEventListener('click', (e) => {
+      App.getModal('newIncome').open();
+    });
+
+    btnExpense.addEventListener('click', (e) => {
+      App.getModal('newExpense').open();
+    })
+   
   }
 }
