@@ -11,7 +11,12 @@ class TransactionsPage {
    * через registerEvents()
    * */
   constructor( element ) {
-
+    if (element) {
+      this.element = element;
+      this.registerEvents();
+    } if (!this.element) {
+      throw new Error("Элемент не существует!");
+    }
   }
 
   /**
