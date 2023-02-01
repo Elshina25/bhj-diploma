@@ -12,14 +12,11 @@ class TransactionsWidget {
    * необходимо выкинуть ошибку.
    * */
   constructor( element ) {
-    if (element) {
-      this.element = element;
-      this.registerEvents();
-    } if (!this.element) {
-      throw new Error("Форма не передана!");
+    if (!element) {
+      throw new Error("Виджет транзакций не передан!");
     }
-
-    
+    this.element = element;
+    this.registerEvents();
 
   }
   /**
@@ -39,6 +36,5 @@ class TransactionsWidget {
     btnExpense.addEventListener('click', (e) => {
       App.getModal('newExpense').open();
     })
-   
   }
 }
