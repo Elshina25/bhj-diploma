@@ -11,19 +11,18 @@ class TransactionsPage {
    * через registerEvents()
    * */
   constructor( element ) {
-    if (element) {
-      this.element = element;
-      this.registerEvents();
-    } if (!this.element) {
-      throw new Error("Элемент не существует!");
+    if (!element) {
+      throw new Error("Страница транзакций не передана!");
     }
+    this.element = element;
+    this.registerEvents();
   }
 
   /**
    * Вызывает метод render для отрисовки страницы
    * */
   update() {
-
+    // this.render(lastOptions = options);
   }
 
   /**
@@ -33,6 +32,14 @@ class TransactionsPage {
    * TransactionsPage.removeAccount соответственно
    * */
   registerEvents() {
+    const btnRemove = document.querySelector('.remove-account');
+    btnRemove.addEventListener('click', (e) => {
+      this.removeAccount();
+    })
+
+
+    //обработчик на удаление транзакций
+    
 
   }
 
@@ -46,7 +53,11 @@ class TransactionsPage {
    * для обновления приложения
    * */
   removeAccount() {
-
+   let remove = confirm('Вы хотите удалить аккаунт?');
+    if (remove) {
+      // Account.remove()
+      this.clear();
+    }
   }
 
   /**
@@ -66,6 +77,18 @@ class TransactionsPage {
    * в TransactionsPage.renderTransactions()
    * */
   render(options){
+    Account.get(Number(options.account_id), ((err, response) => {
+      if (response.success) {
+        const data = response.data;
+        this.renderTitle(data.name);
+      }
+    }))
+    Transaction.list(options.account_id, ((err, response) => {
+      if (response.success) {
+        this.renderTransactions(response.data);
+      }
+    }))
+
 
   }
 
@@ -76,13 +99,15 @@ class TransactionsPage {
    * */
   clear() {
 
+    document.querySelector('.content-title').innerText = 'Название счета';
+
   }
 
   /**
    * Устанавливает заголовок в элемент .content-title
    * */
   renderTitle(name){
-
+    document.querySelector('.content-title').innerText = name;
   }
 
   /**
