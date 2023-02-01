@@ -3,40 +3,37 @@
  * на сервер.
  * */
 const createRequest = options => {
-    const { url, method, data, callback } = options;
+    const { url, method, data, callback} = options;
     const xhr = new XMLHttpRequest();
+    const formData = new FormData();
     xhr.responseType = 'json';
 
-     if (method !== 'GET') {
-        const formData = new FormData();
-      
-        // Object.keys(options.data).forEach(el => {
-        //     formData.append(el, options.data[el]);
-        //     return formData;
-        // })
+    if (method !== 'GET') {
         for (let item in data) {
             formData.append(item, data[item]);
         }
-
-        try {
-            xhr.open(method, url);
-            xhr.send(formData);
-        }
-        catch (e) {
-            callback(e);
-        }
     } else {
         for (let item in data) {
-            return url + '?' + item  + '&' + data[item];
-        }
-        try {
-            xhr.open(method, url);
-            xhr.send();
-        }
-        catch (e) {
-            callback(e);
+           const urlString = url + '?' + item  + '&' + data[item];
         }
     }
+
+    xhr.addEventListener('load', () => {
+            const response = xhr.response;
+            callback(null, response);
+    })
+
+    try {
+        xhr.open(method, url);
+        if (method !== 'GET') {
+            xhr.send(formData)
+        } else {
+            xhr.send();
+        }
+    }
+    catch (e) {
+        callback(e);
+    }   
 }
 
 
