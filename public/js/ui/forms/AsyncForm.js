@@ -13,12 +13,11 @@ class AsyncForm {
    * через registerEvents()
    * */
   constructor(element) {
-    if (element) {
-      this.element = element;
-      this.registerEvents();
-    } if (!this.element) {
+    if (!element) {
       throw new Error("Форма не передана!");
     }
+    this.element = element;
+    this.registerEvents();
   }
 
   /**
