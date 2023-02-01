@@ -12,12 +12,11 @@ class Modal {
    * необходимо выкинуть ошибку.
    * */
   constructor(element) {
-    if (element) {
-      this.element = element;
-      this.registerEvents();
-    } if (!this.element) {
+    if (!element) {
       throw new Error("Модальное окно не передано!");
     }
+    this.element = element;
+    this.registerEvents();
   }
 
   /**
@@ -45,9 +44,7 @@ class Modal {
   registerEvents() {
     const btnClose = Array.from(document.querySelectorAll('[data-dismiss = "modal"]'));
     btnClose.forEach(el => el.addEventListener('click', (e) => {
-      if (el.closest('.modal') === this.element) {
-        this.onClose(e);
-      }
+      this.onClose(e);
     }));
   }
 
