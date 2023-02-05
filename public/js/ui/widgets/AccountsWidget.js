@@ -36,17 +36,13 @@ class AccountsWidget {
       App.getModal('createAccount').open();
     });
 
-    this.element.addEventListener('click', (e) => {
-      const a = Array.from(this.element.querySelectorAll('a'));
-      a.forEach(el => {
-        if (e.target === el) {
-          this.onSelectAccount(el);
-        } else {
-          return;
-        }
-      })
-    })
-
+    const sidebar = document.querySelector('.accounts-panel');
+    sidebar.addEventListener('click', (e) => {
+      const parent = e.target.closest('.account');
+      if (parent) {
+        this.onSelectAccount(parent);
+      } 
+    });
   }
 
   /**
@@ -62,7 +58,7 @@ class AccountsWidget {
   update() {
     const userCurrent = User.current();
     if (userCurrent) {
-      Account.list(userCurrent.id, (err, response) => {
+      Account.list(userCurrent, (err, response) => {
         if (response.success) {
           this.clear();
           const accountList = response.data;
@@ -91,27 +87,17 @@ class AccountsWidget {
    * Вызывает App.showPage( 'transactions', { account_id: id_счёта });
    * */
   onSelectAccount(element) {
-    const a = Array.from(this.element.querySelectorAll('a'));
-    a.forEach(el => {
-      if (el !== element) {
+    const accounts = Array.from(this.element.querySelectorAll('.account'));
+    accounts.forEach(el => {
+      if (el !== element && el.classList.contains('active')) {
         el.classList.remove('active');
       }
     })
     element.classList.add('active');
 
-    let id;
-    const accountName = element.firstElementChild.innerText;
-    Account.list(accountName, ((err, response) => {
-      if (response.success) {
-        response.data.forEach(el => {
-          if (el.name === accountName) {
-            id = el.id;
-            console.log(id);
-            App.showPage('transactions', { account_id: id })
-          }
-        });
-      }
-    }))
+    let id = element.dataset.id;
+    App.showPage('transactions', { account_id: id })
+   
    
   }
 
@@ -121,7 +107,7 @@ class AccountsWidget {
    * item - объект с данными о счёте
    * */
   getAccountHTML(item) {
-    return `<li class="account">
+    return `<li class="account" data-id= "${item.id}">
               <a href="#">
                 <span>${item.name}</span>
                 <span>/ ${item.sum}</span>
@@ -138,5 +124,4 @@ class AccountsWidget {
   renderItem(data) {
     this.element.insertAdjacentHTML('beforeend', this.getAccountHTML(data));
   }
-
 }
